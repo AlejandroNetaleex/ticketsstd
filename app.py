@@ -46,7 +46,7 @@ def login():
 def validate_login():
     username = request.form.get('username')
     password = request.form.get('password')
-    if username == "ale" and password == "12345":
+    if username == "ale" and password == "StD2025!":
         return redirect('/tickets')  # Cambiado de '/tickets.hmtl' a '/tickets'
     return render_template('login.html', error="Credenciales inválidas")
 
