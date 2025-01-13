@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="/static/js/scripts.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"><script src="/static/js/scripts.js" defer></script>
+    <title>Sistema de Tickets</title>
+</head>
+<body>
+    <header class="header">
+        <h1>STD - Sistema de Folios</h1>
+        <button class="logout-button" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+        
+    </header>
+    <!-- Barra de búsqueda -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Buscar por Folio, Nombre o Modelo del Equipo" />
+        <button onclick="searchTable()">Buscar</button>
+    </div>
+    
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Folio</th>
+                    <th>Timestamp</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Tipo Reparación</th>
+                    <th>Descripción</th>
+                    <th>Modelo</th>
+                    <th>Correo</th>
+                    <th>Costo</th>
+                    <th>Fecha de Entrega</th>
+                    <th>Estatus</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr data-folio="{{ record[0] }}">
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                    <td>{{ record[2] }}</td>
+                    <td>{{ record[3] }}</td>
+                    <td>{{ record[4] }}</td>
+                    <td>{{ record[5] }}</td>
+                    <td>{{ record[6] }}</td>
+                    <td>{{ record[7] }}</td>
+                    <td>{{ record[9] or "None" }}</td> <!-- Fecha de Entrega -->
+                    <td>{{ record[8] or "None" }}</td> <!-- Costo -->
+                    <td>{{ record[10] }}</td>
+                    <td>
+                        
+                        <button onclick="confirmDelete('{{ record[0] }}')">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                        <button onclick="openStatusModal('{{ record[0] }}')">
+                            <i class="fas fa-edit"></i> Estatus
+                        </button>
+                        {% if not record[8] %}
+                            <button data-action="addCost" onclick="addCost('{{ record[0] }}')">
+                                <i class="fas fa-dollar-sign"></i> Costo
+                            </button>
+                        {% else %}
+                            <button disabled>
+                                <i class="fas fa-dollar-sign"></i> Asignado
+                            </button>
+                        {% endif %}
+                        <button onclick="generateReport({
+                            folio: '{{ record[0] }}',
+                            timestamp: '{{ record[1] }}',
+                            nombre: '{{ record[2] }}',
+                            tipoReparacion: '{{ record[4] }}',
+                            descripcion: '{{ record[5] }}',
+                            modelo: '{{ record[6] }}',
+                            correo: '{{ record[7] }}'
+                        })">
+                            <i class="fas fa-file-pdf"></i> Folio
+                        </button>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions">
+        <button onclick="showForm('addForm')">Agregar Ticket</button>
+        <button onclick="window.location='/export'">Exportar a Excel</button>
+    </div>
+
+    <!-- Formulario emergente para agregar ticket -->
+    <div id="addForm" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideForm('addForm')">&times;</span>
+            <h2>Agregar Ticket</h2>
+            <form id="addTicketForm" method="POST" action="/add">
+                <input type="text" name="nombre" placeholder="Nombre completo" required>
+                <input type="text" name="telefono" placeholder="Teléfono" required>
+                <select name="tipo_reparacion" required>
+                    <option value="">Seleccione Tipo de Reparación</option>
+                    <option value="HARDWARE">HARDWARE</option>
+                    <option value="SOFTWARE">SOFTWARE</option>
+                </select>
+                <textarea name="descripcion" placeholder="Descripción detallada del problema" required></textarea>
+                <input type="text" name="modelo" placeholder="Modelo del equipo" required>
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+                <input type="hidden" name="estatus" value="NOTIFICADO">
+                <button type="submit">Agregar Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar estatus -->
+    <div id="updateStatusForm" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideForm('updateStatusForm')">&times;</span>
+            <h2>Actualizar Estatus</h2>
+            <form id="statusForm">
+                <label for="newStatus">Selecciona el Nuevo Estatus:</label>
+                <select id="newStatus" required>
+                    <option value="RECIBIDO">RECIBIDO</option> <!-- Nuevo estatus -->
+                    <option value="ENTREGADO">ENTREGADO</option>
+                    <option value="DEVUELTO">DEVUELTO</option>
+                    <option value="GARANTIA">GARANTIA</option>
+                    <option value="NOTIFICADO">NOTIFICADO</option>
+                </select>                
+                <button type="submit">Actualizar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

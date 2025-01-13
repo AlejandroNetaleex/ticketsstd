@@ -1,0 +1,106 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #1e293b; /* Fondo oscuro */
+    color: #f8fafc; /* Texto claro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Altura completa de la pantalla */
+}
+
+/* Login Container */
+.login-container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px; /* Tamaño máximo del contenedor */
+}
+
+/* Login Card */
+.login-card {
+    background: #111827; /* Fondo oscuro de la tarjeta */
+    padding: 20px;
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    color: #f8fafc;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 80px; /* Tamaño del logo */
+    height: auto;
+}
+
+/* Título */
+h1 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #3b82f6; /* Azul para el título */
+}
+
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaciado entre campos */
+}
+
+input {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #f1f5f9; /* Fondo claro */
+    color: #1e293b; /* Texto oscuro */
+    font-size: 1em;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+input::placeholder {
+    color: #64748b; /* Color del texto de marcador */
+}
+
+/* Botón de Ingresar */
+button[type="submit"] {
+    padding: 10px;
+    background: #10b981; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+button[type="submit"]:hover {
+    background: #059669; /* Verde más oscuro */
+}
+
+/* Footer */
+footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #9ca3af;
+}
+
+footer b {
+    color: #3b82f6; /* Azul para el nombre */
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    input, button {
+        font-size: 0.9em;
+    }
+}

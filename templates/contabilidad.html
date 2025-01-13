@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contabilidad</title>
+    <link rel="stylesheet" href="/static/css/contabilidad.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Módulo de Contabilidad</h1>
+        <button onclick="window.location.href='/tickets'">Regresar</button>
+    </header>
+
+    <section>
+        <h2>Ingresos por Tickets Entregados</h2>
+        <table id="ingresos-automaticos">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Ingresos</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Registro Manual de Ingresos y Gastos</h2>
+        <form id="registro-form">
+            <input type="date" id="fecha" required>
+            <input type="number" id="ingresos" placeholder="Ingresos" step="0.01">
+            <input type="number" id="gastos" placeholder="Gastos" step="0.01">
+            <button type="submit">Registrar</button>
+        </form>
+        <table id="ingresos-gastos">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Ingresos</th>
+                    <th>Gastos</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Gráficas</h2>
+        <canvas id="ingresos-mensuales"></canvas>
+        <canvas id="ingresos-vs-gastos"></canvas>
+        <canvas id="balance-mensual"></canvas>
+    </section>
+
+    <script src="/static/js/contabilidad.js"></script>
+</body>
+</html>

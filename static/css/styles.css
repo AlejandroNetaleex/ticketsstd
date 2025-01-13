@@ -1,0 +1,351 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1e293b, #2c3e50);
+    color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin: 0;
+    text-align: center;
+}
+
+/* Header */
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1e293b;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #f8fafc;
+    position: relative;
+}
+
+.logout-button {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px 15px;
+    background: #e11d48;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background: #be123c;
+}
+
+/* Search Bar */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.search-container input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    width: 300px;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input::placeholder {
+    color: #64748b;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background: #2563eb;
+}
+
+
+/* Table Container with Scroll */
+.table-container {
+    width: 100%;
+    max-height: 400px; /* Altura máxima del contenedor para el scroll */
+    overflow-y: auto; /* Habilita el desplazamiento vertical */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1f2937;
+    color: #f8fafc;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #374151;
+    vertical-align: top;
+}
+
+th {
+    background: #111827;
+    color: #3b82f6;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+    position: sticky; /* Mantiene el encabezado fijo */
+    top: 0; /* Fija el encabezado en la parte superior */
+    z-index: 2;
+}
+
+td {
+    color: #e5e7eb;
+    word-wrap: break-word;
+}
+
+/* Description Column */
+td:nth-child(6) {
+    max-width: 200px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Email Column */
+td:nth-child(8) {
+    max-width: 150px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Date and Cost Columns */
+td:nth-child(9), td:nth-child(10) {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Rows */
+tr:nth-child(even) {
+    background: #374151;
+}
+
+tr:hover {
+    background: #4b5563;
+}
+
+/* Buttons Inside Table */
+table button {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+table button i {
+    font-size: 1em;
+}
+
+/* Delete Button */
+table button:nth-child(1) {
+    background: #e11d48;
+    color: white;
+}
+
+table button:nth-child(1):hover {
+    background: #be123c;
+}
+
+/* Update Status Button */
+table button:nth-child(2) {
+    background: #3b82f6;
+    color: white;
+}
+
+table button:nth-child(2):hover {
+    background: #2563eb;
+}
+
+/* Add Cost Button */
+table button:nth-child(3) {
+    background: #10b981;
+    color: white;
+}
+
+table button:nth-child(3):hover {
+    background: #059669;
+}
+
+table button:disabled {
+    background: #446b04;
+    cursor: not-allowed;
+}
+/* Botón Folio */
+table button:nth-child(4) {
+    background: #082552;
+    color: white;
+}
+
+table button:nth-child(4):hover {
+    background: #05080e;
+}
+
+
+/* Action Buttons Below Table */
+.actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.actions button:nth-child(1) {
+    background: #10b981;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.actions button:nth-child(1):hover {
+    background: #059669;
+}
+
+.actions button:nth-child(2) {
+    background: #f59e0b;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.actions button:nth-child(2):hover {
+    background: #d97706;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #2c3e50;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #fff;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #3b82f6;
+    font-size: 1.5em;
+}
+
+form input, form select, form textarea {
+    display: block;
+    margin: 10px auto;
+    width: 90%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+form select {
+    text-transform: uppercase;
+}
+
+form button {
+    padding: 10px 20px;
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background: #059669;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    th, td {
+        font-size: 0.9em;
+    }
+    table button {
+        font-size: 0.7em;
+        width: 100px;
+    }
+}
