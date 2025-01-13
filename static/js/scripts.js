@@ -180,7 +180,7 @@ function generateReport(data) {
     const doc = new jsPDF();
 
     // Agregar logo
-    const logoPath = '/static/images/logo.png';
+    const logoPath = '/static/images/logos.png';
     doc.addImage(logoPath, 'PNG', 10, 10, 30, 30); // Logo en la esquina superior izquierda
 
     // Configuración del encabezado del documento
