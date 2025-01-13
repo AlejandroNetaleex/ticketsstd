@@ -181,7 +181,7 @@ function generateReport(data) {
 
     // Agregar logo
     const logoPath = '/static/images/logos.png';
-    doc.addImage(logoPath, 'PNG', 10, 10, 70, 30); // Logo en la esquina superior izquierda
+    doc.addImage(logoPath, 'PNG', 10, 10, 55, 30); // Logo en la esquina superior izquierda
 
     // Configuración del encabezado del documento
     doc.setFont("helvetica", "bold");
