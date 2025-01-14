@@ -10,6 +10,8 @@ EXCEL_PATH = "data/tickets.xlsx"
 
 # Inicializar el archivo Excel
 def init_excel():
+    if not os.path.exists("data"):
+        os.makedirs("data")  # Crear el directorio si no existe
     if not os.path.exists(EXCEL_PATH):
         df = pd.DataFrame(columns=[
             "folio", "timestamp", "nombre", "telefono", "tipo_reparacion",
@@ -102,69 +104,3 @@ def export_to_excel():
 if __name__ == '__main__':
     init_excel()
     app.run(debug=True)
-
-
-
-"""
-
-@app.route('/contabilidad')
-def contabilidad():
-    return render_template('contabilidad.html')
-
-@app.route('/contabilidad/ingresos_automaticos', methods=['GET'])
-def ingresos_automaticos():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT strftime('%Y-%m', fecha_entrega) AS mes, SUM(costo) AS ingresos
-        FROM tickets
-        WHERE estatus = 'ENTREGADO'
-        GROUP BY mes
-    ''')
-    ingresos = cursor.fetchall()
-    conn.close()
-    return jsonify(ingresos)
-
-@app.route('/contabilidad/registrar', methods=['POST'])
-def registrar_ingresos_gastos():
-    data = request.json
-    fecha = data.get('fecha')
-    ingresos = data.get('ingresos', 0)
-    gastos = data.get('gastos', 0)
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO contabilidad (fecha, ingresos, gastos)
-        VALUES (?, ?, ?)
-    ''', (fecha, ingresos, gastos))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Registro agregado correctamente."})
-
-@app.route('/contabilidad/datos_graficas', methods=['GET'])
-def datos_graficas():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT strftime('%Y-%m', fecha_entrega) AS mes, SUM(costo) AS ingresos
-        FROM tickets
-        WHERE estatus = 'ENTREGADO'
-        GROUP BY mes
-    ''')
-    ingresos_automaticos = cursor.fetchall()
-    cursor.execute('''
-        SELECT fecha, SUM(ingresos), SUM(gastos)
-        FROM contabilidad
-        GROUP BY fecha
-    ''')
-    ingresos_gastos = cursor.fetchall()
-    conn.close()
-    return jsonify({
-        "ingresos_automaticos": ingresos_automaticos,
-        "ingresos_gastos": ingresos_gastos
-    })
-
-if __name__ == '__main__':
-    init_db()
-    app.run(debug=True)
-    """
