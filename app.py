@@ -1,41 +1,26 @@
 from flask import Flask, render_template, request, redirect, jsonify, send_file
 from datetime import datetime
-import sqlite3
 import pandas as pd
+import os
 
 app = Flask(__name__)
 
-# Configuración de la base de datos
-DB_PATH = "data/tickets.db"
+# Configuración del archivo Excel
+EXCEL_PATH = "data/tickets.xlsx"
 
-# Inicializar la base de datos
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS tickets (
-        folio TEXT PRIMARY KEY,
-        timestamp TEXT,
-        nombre TEXT NOT NULL,
-        telefono TEXT NOT NULL,
-        tipo_reparacion TEXT NOT NULL,
-        descripcion TEXT NOT NULL,
-        modelo TEXT NOT NULL,
-        correo TEXT NOT NULL,
-        fecha_entrega TEXT,
-        costo REAL,
-        estatus TEXT NOT NULL
-    )''')
-    conn.commit()
-    conn.close()
+# Inicializar el archivo Excel
+def init_excel():
+    if not os.path.exists(EXCEL_PATH):
+        df = pd.DataFrame(columns=[
+            "folio", "timestamp", "nombre", "telefono", "tipo_reparacion",
+            "descripcion", "modelo", "correo", "fecha_entrega", "costo", "estatus"
+        ])
+        df.to_excel(EXCEL_PATH, index=False)
 
 # Generar un folio único
 def generate_folio():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM tickets")
-    count = cursor.fetchone()[0] + 1
-    folio = f"STD-A-{count:03}"
-    conn.close()
+    df = pd.read_excel(EXCEL_PATH)
+    folio = f"STD-A-{len(df) + 1:03}"  # Incremental según el número de registros
     return folio
 
 @app.route('/')
@@ -47,57 +32,55 @@ def validate_login():
     username = request.form.get('username')
     password = request.form.get('password')
     if username == "stdtec-admin" and password == "StD2025!":
-        return redirect('/tickets')  # Cambiado de '/tickets.hmtl' a '/tickets'
+        return redirect('/tickets')
     return render_template('login.html', error="Credenciales inválidas")
-
 
 @app.route('/tickets')
 def tickets():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tickets")
-    records = cursor.fetchall()
-    conn.close()
+    df = pd.read_excel(EXCEL_PATH)
+    records = df.to_dict(orient="records")
     return render_template('tickets.html', records=records)
 
 @app.route('/add', methods=['POST'])
 def add_ticket():
     data = request.form
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    df = pd.read_excel(EXCEL_PATH)
     folio = generate_folio()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cursor.execute('''INSERT INTO tickets (folio, timestamp, nombre, telefono, tipo_reparacion, descripcion, modelo, correo, estatus)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', (
-        folio, timestamp, data['nombre'], data['telefono'], data['tipo_reparacion'], 
-        data['descripcion'], data['modelo'], data['correo'], data['estatus']
-    ))
-    conn.commit()
-    conn.close()
+    new_ticket = {
+        "folio": folio,
+        "timestamp": timestamp,
+        "nombre": data['nombre'],
+        "telefono": data['telefono'],
+        "tipo_reparacion": data['tipo_reparacion'],
+        "descripcion": data['descripcion'],
+        "modelo": data['modelo'],
+        "correo": data['correo'],
+        "fecha_entrega": None,
+        "costo": None,
+        "estatus": data['estatus']
+    }
+    df = df.append(new_ticket, ignore_index=True)
+    df.to_excel(EXCEL_PATH, index=False)
     return redirect('/tickets')
 
 @app.route('/delete/<folio>', methods=['DELETE'])
 def delete_ticket(folio):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM tickets WHERE folio = ?", (folio,))
-    conn.commit()
-    conn.close()
+    df = pd.read_excel(EXCEL_PATH)
+    df = df[df['folio'] != folio]  # Filtrar registros para eliminar el seleccionado
+    df.to_excel(EXCEL_PATH, index=False)
     return jsonify({"message": "Registro eliminado correctamente"}), 200
 
 @app.route('/update_status/<folio>', methods=['PATCH'])
 def update_status(folio):
     new_status = request.json.get('new_status')
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    df = pd.read_excel(EXCEL_PATH)
     if new_status.upper() == "ENTREGADO":
         fecha_entrega = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("UPDATE tickets SET estatus = ?, fecha_entrega = ? WHERE folio = ?", 
-                       (new_status.upper(), fecha_entrega, folio))
+        df.loc[df['folio'] == folio, ['estatus', 'fecha_entrega']] = [new_status.upper(), fecha_entrega]
     else:
-        cursor.execute("UPDATE tickets SET estatus = ? WHERE folio = ?", (new_status.upper(), folio))
-    conn.commit()
-    conn.close()
+        df.loc[df['folio'] == folio, 'estatus'] = new_status.upper()
+    df.to_excel(EXCEL_PATH, index=False)
     return jsonify({"message": "Estatus actualizado correctamente."}), 200
 
 @app.route('/add_cost/<folio>', methods=['PATCH'])
@@ -105,28 +88,19 @@ def add_cost(folio):
     cost = request.json.get('cost')
     if not cost or not cost.isdigit():
         return jsonify({"message": "Costo inválido"}), 400
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT costo FROM tickets WHERE folio = ?", (folio,))
-    current_cost = cursor.fetchone()
-    if current_cost and current_cost[0] is not None:
+    df = pd.read_excel(EXCEL_PATH)
+    if not df[df['folio'] == folio]['costo'].isnull().all():
         return jsonify({"message": "El costo ya fue asignado"}), 400
-    cursor.execute("UPDATE tickets SET costo = ? WHERE folio = ?", (cost, folio))
-    conn.commit()
-    conn.close()
+    df.loc[df['folio'] == folio, 'costo'] = float(cost)
+    df.to_excel(EXCEL_PATH, index=False)
     return jsonify({"message": "Costo agregado correctamente."}), 200
 
 @app.route('/export')
 def export_to_excel():
-    conn = sqlite3.connect(DB_PATH)
-    df = pd.read_sql_query("SELECT * FROM tickets", conn)
-    file_path = "data/tickets.xlsx"
-    df.to_excel(file_path, index=False)
-    conn.close()
-    return send_file(file_path, as_attachment=True)
+    return send_file(EXCEL_PATH, as_attachment=True)
 
 if __name__ == '__main__':
-    init_db()
+    init_excel()
     app.run(debug=True)
 
 
