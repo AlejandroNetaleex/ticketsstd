@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Tickets - Login</title>
+    <title>Login - SOPORTE TI STD</title>
+    <meta name="description" content="Inicia sesión en el sistema de tickets SOPORTE TI STD.">
+    <meta name="keywords" content="soporte técnico, sistema de tickets, IT support, Alejandro Machuca">
     <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
             <div class="logo-container">
-                <img src="/static/images/logo.png" alt="Logo de la Empresa" class="logo">
+                <img src="/static/images/logo.png" alt="Logo de SOPORTE TI STD" class="logo">
             </div>
-            <h1>SISTEMA DE FOLIOS STD</h1>
+            <h1>SOPORTE TI STD</h1>
             <form method="POST" action="/validate">
-                <input type="text" name="username" placeholder="Usuario" required>
-                <input type="password" name="password" placeholder="Contraseña" required>
+                {% if error %}
+                    <p class="error-message">{{ error }}</p>
+                {% endif %}
+                <label for="username">Usuario:</label>
+                <input id="username" type="text" name="username" placeholder="Usuario" required pattern="[a-zA-Z0-9_-]{3,15}">
+                <label for="password">Contraseña:</label>
+                <input id="password" type="password" name="password" placeholder="Contraseña" required minlength="8">
                 <button type="submit">Ingresar</button>
             </form>
-            
         </div>
         <footer>
             © 2025 SOPORTE TI STD. Desarrollado por <b>Alejandro Machuca</b>.
