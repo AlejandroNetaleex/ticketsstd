@@ -129,7 +129,6 @@ function addCost(folio) {
     }
 }
 
-// Búsqueda en la tabla
 // Búsqueda en la tabla por Folio, Nombre o Modelo del Equipo
 function searchTable() {
     try {
@@ -167,115 +166,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
+// Generar reporte técnico en PDF
 function generateReport(data) {
-    // Verifica si jsPDF está disponible
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert("STD TICKETS DICE: jsPDF no está disponible. Verifica que la biblioteca esté correctamente cargada.");
-        console.error("jsPDF no se encontró. Asegúrate de incluir la biblioteca.");
-        return;
-    }
-
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
-    // Agregar logo
-    const logoPath = '/static/images/logos.png';
-    doc.addImage(logoPath, 'PNG', 10, 10, 55, 30); // Logo en la esquina superior izquierda
-
-    // Configuración del encabezado del documento
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("SERVICIO TÉCNICO STD", 105, 20, { align: "center" });
-    doc.setFontSize(10);
-    doc.text("Reporte Técnico - Documento Informativo", 105, 27, { align: "center" });
-
-    // Datos del negocio
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text("STD - Soluciones Tecnológicas y Digitales", 105, 35, { align: "center" });
-    doc.text("Teléfono: 427 371 9797", 105, 40, { align: "center" });
-
-    // Línea separadora
-    doc.setLineWidth(0.5);
-    doc.line(20, 45, 190, 45);
-
-    // Mensaje de agradecimiento
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    doc.text("Apreciamos su confianza al elegir nuestros servicios.", 20, 55);
-
-    // Información del cliente
-    doc.setFont("helvetica", "bold");
-    doc.text("Información del Cliente:", 20, 65);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Folio: ${data.folio}`, 20, 75);
-    doc.text(`Fecha de registro: ${data.timestamp}`, 20, 82);
-    doc.text(`Nombre del cliente: ${data.nombre}`, 20, 89);
-    doc.text(`Correo del cliente: ${data.correo}`, 20, 96);
-
-    // Información del equipo y reparación
-    doc.setFont("helvetica", "bold");
-    doc.text("Detalles del Equipo y Reparación:", 20, 106);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Tipo de reparación: ${data.tipoReparacion}`, 20, 115);
-    doc.text(`Modelo del equipo: ${data.modelo}`, 20, 122);
-    doc.text("Descripción del problema:", 20, 129);
-    doc.text(data.descripcion, 25, 136, { maxWidth: 160 });
-
-    // Garantía y términos
-    doc.setFont("helvetica", "bold");
-    doc.text("Garantía del Servicio:", 20, 155);
-    doc.setFont("helvetica", "normal");
-    doc.text(
-        "Le informamos que esta reparación cuenta con una garantía de ___ días. Por favor conserve este documento como comprobante.",
-        20,
-        162,
-        { maxWidth: 170 }
-    );
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Política de Retiro del Equipo:", 20, 175);
-    doc.setFont("helvetica", "normal");
-    doc.text(
-        "Por favor tenga en cuenta que, si el equipo no es retirado dentro de las 3 semanas posteriores a la notificación de reparación completada, y sin aviso previo, el equipo será considerado abandonado y sujeto a desecho. Agradecemos su comprensión.",
-        20,
-        182,
-        { maxWidth: 170 }
-    );
-
-    // Línea separadora final
-    doc.setLineWidth(0.5);
-    doc.line(20, 200, 190, 200);
-
-    // Pie de página
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(10);
-    doc.text("Gracias por confiar en nosotros. Si tiene alguna consulta, no dude en contactarnos.", 20, 210);
-    doc.text("Atentamente, Equipo de Servicio Técnico STD", 20, 217);
-
-    // Guardar el archivo PDF
+    doc.text(`Reporte Técnico: ${data.folio}`, 10, 10);
     doc.save(`reporte_${data.folio}.pdf`);
 }
 
-
 // Asignar atributos `data-folio` a las filas
 document.addEventListener('DOMContentLoaded', function () {
-    try {
-        const rows = document.querySelectorAll("table tbody tr");
-        rows.forEach(row => {
-            const folioCell = row.querySelector("td:first-child");
-            if (folioCell) {
-                row.setAttribute("data-folio", folioCell.textContent.trim());
-            }
-        });
-        console.log("Atributos data-folio asignados correctamente.");
-    } catch (error) {
-        console.error("Error al asignar atributos data-folio:", error);
-        alert("STD TICKETS DICE: No se pudieron asignar los atributos data-folio.");
-    }
+    const rows = document.querySelectorAll("table tbody tr");
+    rows.forEach(row => {
+        const folioCell = row.querySelector("td:first-child");
+        if (folioCell) row.setAttribute("data-folio", folioCell.textContent.trim());
+    });
 });
+
+// Botón de logout
 function logout() {
-    // Redirige al usuario al login
     window.location.href = "/";
 }
